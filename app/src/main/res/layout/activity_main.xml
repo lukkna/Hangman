@@ -22,39 +22,56 @@
         android:text=""
         android:textSize="30sp" />
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_above="@+id/button"
-        android:layout_centerHorizontal="true"
-        android:inputType="textNoSuggestions"
-        android:text=''
-        android:textSize="30sp"
-        android:maxLength="1"/>
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/editText"
-        android:layout_centerHorizontal="true"
-        android:text="Type a letter you want to guess"
-        android:textSize="30sp" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/editText"
-        android:elevation="0dp"
-        android:onClick="getLetter"
-        android:text="Guess letter" />
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/hang0" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        tools:context="com.example.lukas.hangman.MainActivity">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/editText"
+            android:layout_centerHorizontal="true"
+            android:layout_weight="1"
+            android:text=""
+            android:textSize="30sp" />
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_above="@+id/button"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:inputType="textNoSuggestions"
+            android:maxLength="1"
+            android:text=''
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:layout_toEndOf="@+id/editText"
+            android:layout_weight="1"
+            android:elevation="0dp"
+            android:onClick="getLetter"
+            android:text="Guess letter" />
+
+    </LinearLayout>
+
 </LinearLayout>

@@ -8,9 +8,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements MainMvpView {
+public class MainActivity extends AppCompatActivity implements MainView {
 
-    private MainMvpPresenter mPresenter;
+    private MvpPresenter mPresenter;
 
     private TextView mTitleTextView;
     private TextView mWordTextView;
@@ -18,48 +18,43 @@ public class MainActivity extends AppCompatActivity implements MainMvpView {
     private ImageView mImageView;
     private Button mButton;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         mTitleTextView = (TextView) findViewById(R.id.textView2);
         mWordTextView = (TextView) findViewById(R.id.textView);
         mGuessLetterEditText = (EditText) findViewById(R.id.editText);
         mImageView = (ImageView) findViewById(R.id.imageView);
         mButton = (Button) findViewById(R.id.button);
-        mPresenter = new MainPresenter(new AppDataManager(), this);
 
-        //showCorrectWord();
+        mPresenter = new Presenter(new Model(), this);
     }
 
     public void getLetter(View view) {
-        char letter = mPresenter.stringToChar(mGuessLetterEditText.getText().toString());
-        mPresenter.guessLetter(letter);
-        printGuessedLetters();
-        changeImage();
-        mPresenter.wordCompleted();
-        mPresenter.gameOver();
+        mPresenter.onButtonClick(mGuessLetterEditText.getText().toString());
         mGuessLetterEditText.setText("");
     }
 
-    public void printGuessedLetters() {
-        mWordTextView.setText(mPresenter.getGuessedLettersAsString());
-        System.out.println(mPresenter.getGuessedLettersAsString());
-    }
-
-    public void showCorrectWord() {
-        mTitleTextView.setText(mPresenter.getCorrectWord());
+    @Override
+    public void printGuessedLetters(String guessedLetters) {
+        mWordTextView.setText(guessedLetters);
     }
 
     @Override
     public void showMessage(String message) {
         mTitleTextView.setText(message);
-        mButton.setEnabled(false);
     }
 
     @Override
-    public void changeImage() {
-        mImageView.setImageResource(getResources().getIdentifier(mPresenter.changeImage(), "drawable", getPackageName()));
+    public void changeImage(int id) {
+        mImageView.setImageResource(getResources().getIdentifier("hang" + id, "drawable", getPackageName()));
+    }
+
+    @Override
+    public void disableInput() {
+        mButton.setEnabled(false);
+        mGuessLetterEditText.setEnabled(false);
     }
 }
