@@ -35,11 +35,22 @@ public class MainActivity extends AppCompatActivity implements MainView {
     public void getLetter(View view) {
         mPresenter.onButtonClick(mGuessLetterEditText.getText().toString());
         mGuessLetterEditText.setText("");
+
+    }
+
+    public void playGame(View view) {
+        mPresenter.playGame();
     }
 
     @Override
     public void printGuessedLetters(String guessedLetters) {
         mWordTextView.setText(guessedLetters);
+    }
+
+    @Override
+    public void enableInput() {
+        mButton.setEnabled(true);
+        mGuessLetterEditText.setEnabled(true);
     }
 
     @Override

@@ -2,28 +2,41 @@ package com.example.lukas.hangman;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Model implements MvpModel {
-    private static final String[] WORDS = {"PENKTADIENIS", "KOMPIUTERIS", "SAVAITGALIS", "SODININKAS", "KLAVIATURA", "MIKROFONAS", "ZOOLOGIJA", "NOSINAITE", "VAIZDUOKLIS", "ZALIUZES", "SKAICIUOTUVAS"};
-    private static final String WORD = WORDS[new Random().nextInt(10) + 1];
-    private static char[] guessedLetters = new char[WORD.length()];
-    private static int numberOfGuesses = 0; //number of wrong guesses
-    private static char[] guesses = new char[32];
-    private static int totalNumberOfGuesses = 0;
+    //private static final String[] WORDS = {"PENKTADIENIS", "KOMPIUTERIS", "SAVAITGALIS", "SODININKAS", "KLAVIATURA", "MIKROFONAS", "ZOOLOGIJA", "NOSINAITE", "VAIZDUOKLIS", "ZALIUZES", "SKAICIUOTUVAS"};
+    //private static final String word = WORDS[new Random().nextInt(10) + 1];
+
+    private MvpWordProvider wordProvider = new WordProvider();
+    private static String word = "";
+    private char[] guessedLetters;// = new char[getWordProvider().getWord().length()];
+    private int numberOfGuesses = 0; //number of wrong guesses
+    private char[] guesses = new char[32];
+    private int totalNumberOfGuesses = 0;
+
+    public MvpWordProvider getWordProvider() {
+        return wordProvider;
+    }
+
+    @Override
+    public void getNewWord() {
+        getWordProvider().getWordFromApi();
+        setWord(getWordProvider().getWord());
+        guessedLetters = new char[getWordProvider().getWord().length()];
+        resetVariables();
+    }
 
     @Override
     public String getWord() {
-        return WORD;
+        System.out.println("get word " + word);
+        return word;
     }
 
     @Override
     public char[] getGuessedLetters() {
-        for (int i = 0; i < WORD.length(); i++) {
-            if (guessedLetters[i] == 0) {
+        for (int i = 0; i < word.length(); i++)
+            if (guessedLetters[i] == 0)
                 guessedLetters[i] = '*';
-            }
-        }
         return guessedLetters;
     }
 
@@ -41,15 +54,12 @@ public class Model implements MvpModel {
         if (indexes.size() > 0)
             for (int i = 0; i < indexes.size(); i++)
                 guessedLetters[indexes.get(i)] = Character.toUpperCase(letter);
-        else {
-            increaseNumberOfGuesses();
-
-        }
+        else increaseNumberOfGuesses();
     }
 
     @Override
     public boolean wordCompleted() {
-        if (WORD.equals(String.valueOf(getGuessedLetters())))
+        if (word.equals(String.valueOf(getGuessedLetters())))
             return true;
         return false;
     }
@@ -77,7 +87,7 @@ public class Model implements MvpModel {
 
     @Override
     public void addGuess(char letter) {
-        guesses[getTotalNumberOfGuesses()] = letter;
+        guesses[getTotalNumberOfGuesses()] = Character.toUpperCase(letter);
         incTotalNumberOfGuesses();
     }
 
@@ -87,5 +97,15 @@ public class Model implements MvpModel {
 
     public void incTotalNumberOfGuesses() {
         this.totalNumberOfGuesses++;
+    }
+
+    public void setWord(String str) {
+        word = str.toUpperCase();
+    }
+
+    public void resetVariables() {
+        numberOfGuesses = 0;
+        guesses = new char[32];
+        totalNumberOfGuesses = 0;
     }
 }

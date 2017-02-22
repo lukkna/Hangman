@@ -8,4 +8,6 @@ public interface MainView {
     void disableInput();
 
     void printGuessedLetters(String guessedLetters);
+
+    void enableInput();
 }

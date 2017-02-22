@@ -16,4 +16,6 @@ public interface MvpModel {
     char[] getGuesses();
 
     void addGuess(char letter);
+
+    void getNewWord();
 }

@@ -55,6 +55,7 @@
             android:layout_above="@+id/button"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
+            android:enabled="false"
             android:inputType="textNoSuggestions"
             android:maxLength="1"
             android:text=''
@@ -69,9 +70,17 @@
             android:layout_toEndOf="@+id/editText"
             android:layout_weight="1"
             android:elevation="0dp"
+            android:enabled="false"
             android:onClick="getLetter"
             android:text="Guess letter" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:onClick="playGame"
+        android:text="Play game" />
 
 </LinearLayout>

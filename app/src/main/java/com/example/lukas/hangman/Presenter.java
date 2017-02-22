@@ -32,7 +32,7 @@ public class Presenter implements MvpPresenter {
 
     public void wordCompleted() {
         if (getMvpModel().wordCompleted()) {
-            mainView.showMessage("Victory!");
+            mainView.showMessage("Victory!" + getCorrectWord() + ".");
             mainView.disableInput();
         }
     }
@@ -60,12 +60,25 @@ public class Presenter implements MvpPresenter {
 
     @Override
     public void onButtonClick(String letter) {
-        guessLetter(stringToChar(letter));
-        addGuess(stringToChar(letter));
+        if (letter.length() != 0) {
+            guessLetter(stringToChar(letter));
+            addGuess(stringToChar(letter));
+            showGuesses();
+            wordCompleted();
+            gameOver();
+            mainView.changeImage(getMvpModel().getNumberOfGuesses());
+            mainView.printGuessedLetters(getGuessedLettersAsString());
+
+            System.out.println(getMvpModel().getWord());
+        }
+    }
+
+    @Override
+    public void playGame() {
+        mainView.changeImage(0);
         showGuesses();
-        wordCompleted();
-        gameOver();
-        mainView.changeImage(getMvpModel().getNumberOfGuesses());
-        mainView.printGuessedLetters(getGuessedLettersAsString());
+        getMvpModel().getNewWord();
+        System.out.println("playgame presenter" + getMvpModel().getWord());
+        mainView.enableInput();
     }
 }
