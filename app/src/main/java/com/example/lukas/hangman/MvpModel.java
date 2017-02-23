@@ -5,7 +5,7 @@ public interface MvpModel {
 
     char[] getGuessedLetters();
 
-    void addCorrectGuess(char letter);
+    void doGuessLetter(char letter);
 
     int getNumberOfGuesses();
 
@@ -15,7 +15,5 @@ public interface MvpModel {
 
     char[] getGuesses();
 
-    void addGuess(char letter);
-
-    void getNewWord();
+    void startNewGame(GameStartCallback callback);
 }

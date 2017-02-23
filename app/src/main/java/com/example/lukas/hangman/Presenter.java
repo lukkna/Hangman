@@ -10,75 +10,84 @@ public class Presenter implements MvpPresenter {
         this.mainView = mainView;
     }
 
-    public MvpModel getMvpModel() {
+    private MvpModel getMvpModel() {
         return mvpModel;
     }
 
-    public void guessLetter(char letter) {
-        getMvpModel().addCorrectGuess(letter);
+    private void guessLetter(char letter) {
+        getMvpModel().doGuessLetter(letter);
     }
 
-    public String getCorrectWord() {
+    private String getCorrectWord() {
         return getMvpModel().getWord();
     }
 
-    public String getGuessedLettersAsString() {
+    private String getGuessedLettersAsString() {
         return String.valueOf(getMvpModel().getGuessedLetters());
     }
 
-    public String getGuesses() {
+    private String getGuesses() {
         return String.valueOf(getMvpModel().getGuesses());
     }
 
-    public void wordCompleted() {
+    private void checkIfGameEnded() {
+        checkVictory();
+        checkGameOver();
+    }
+
+    private void checkVictory() {
         if (getMvpModel().wordCompleted()) {
-            mainView.showMessage("Victory!" + getCorrectWord() + ".");
+            mainView.showMessage("Victory!");
             mainView.disableInput();
         }
     }
 
-    public void gameOver() {
+    private void checkGameOver() {
         if (getMvpModel().gameOver()) {
             mainView.showMessage("Defeat! Correct word is " + getCorrectWord() + ".");
             mainView.disableInput();
         }
     }
 
-    public char stringToChar(String letter) {
+    private char stringToChar(String letter) {
         if (letter.length() > 0)
             return letter.charAt(0);
         else return 0;
     }
 
-    public void showGuesses() {
+    private void showGuesses() {
         mainView.showMessage(getGuesses());
-    }
-
-    public void addGuess(char letter) {
-        getMvpModel().addGuess(letter);
-    }
-
-    @Override
-    public void onButtonClick(String letter) {
-        if (letter.length() != 0) {
-            guessLetter(stringToChar(letter));
-            addGuess(stringToChar(letter));
-            showGuesses();
-            wordCompleted();
-            gameOver();
-            mainView.changeImage(getMvpModel().getNumberOfGuesses());
-            mainView.printGuessedLetters(getGuessedLettersAsString());
-
-            System.out.println(getMvpModel().getWord());
-        }
+        mainView.changeImage(getMvpModel().getNumberOfGuesses());
+        mainView.printGuessedLetters(getGuessedLettersAsString());
     }
 
     @Override
-    public void playGame() {
-        mainView.changeImage(0);
+    public void onGuessLetter(String letter) {
+        if (letter.length() != 0)
+            guessSingleLetter(stringToChar(letter));
+        else
+            mainView.showMessage("Type in letter first!");
+    }
+
+    private void guessSingleLetter(char singleLetter) {
+        guessLetter(singleLetter);
         showGuesses();
-        getMvpModel().getNewWord();
-        System.out.println("playgame presenter" + getMvpModel().getWord());
-        mainView.enableInput();
+        checkIfGameEnded();
+    }
+
+    @Override
+    public void onStartNewGame() {
+        mainView.enableProgressBar(true);
+        mainView.disableInput();
+        mainView.changeImage(0);
+        getMvpModel().startNewGame(new GameStartCallback() {
+            @Override
+            public void gameStarted() {
+                showGuesses();//reset guesses
+                mainView.printGuessedLetters(getGuessedLettersAsString());
+                mainView.enableInput();
+                mainView.enableProgressBar(false);
+            }
+        });
     }
 }

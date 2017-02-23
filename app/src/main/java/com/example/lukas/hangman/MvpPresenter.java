@@ -1,7 +1,7 @@
 package com.example.lukas.hangman;
 
 public interface MvpPresenter {
-    void onButtonClick(String letter);
+    void onGuessLetter(String letter);
 
-    void playGame();
+    void onStartNewGame();
 }

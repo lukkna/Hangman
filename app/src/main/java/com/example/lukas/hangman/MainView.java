@@ -10,4 +10,6 @@ public interface MainView {
     void printGuessedLetters(String guessedLetters);
 
     void enableInput();
+
+    void enableProgressBar(boolean enabled);
 }
