@@ -12,13 +12,13 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity implements MainView {
 
     private MvpPresenter mPresenter;
+    private StateKeeper mStateKeeper;
 
     private TextView mTitleTextView;
     private TextView mWordTextView;
     private EditText mGuessLetterEditText;
     private ImageView mImageView;
     private Button mButton; //guess letter
-    private Button mButton2; //play game
     private RelativeLayout mRelativeLayout; //progress bar
 
     @Override
@@ -26,29 +26,29 @@ public class MainActivity extends AppCompatActivity implements MainView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final Model model = new Model();
+        mStateKeeper = new StateKeeper(model);
+        mPresenter = new Presenter(model, this);
+
         mTitleTextView = (TextView) findViewById(R.id.textView2);
         mWordTextView = (TextView) findViewById(R.id.textView);
         mGuessLetterEditText = (EditText) findViewById(R.id.editText);
         mImageView = (ImageView) findViewById(R.id.imageView);
         mButton = (Button) findViewById(R.id.button);
-        mButton2 = (Button) findViewById(R.id.button2);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.loadingPanel);
 
-        mPresenter = new Presenter(new Model(), this);
+        if (savedInstanceState != null) {
+            mStateKeeper.restoreState(savedInstanceState);
+            mPresenter.restoreState();
+        }
+        else mPresenter.onStartNewGame();
     }
 
-//    @Override
-//    protected void onPause() {
-//
-//
-//
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//
-//
-//    }
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        mStateKeeper.saveState(savedInstanceState);
+        super.onSaveInstanceState(savedInstanceState);
+    }
 
     public void guessLetter(View view) {
         mPresenter.onGuessLetter(mGuessLetterEditText.getText().toString());
@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     public void startNewGame(View view) {
         mPresenter.onStartNewGame();
-        mButton2.setText("Start new game");
     }
 
     @Override

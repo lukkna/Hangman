@@ -3,7 +3,6 @@ package com.example.lukas.hangman;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Model implements MvpModel {
     //private static final String[] WORDS = {"PENKTADIENIS", "KOMPIUTERIS", "SAVAITGALIS", "SODININKAS", "KLAVIATURA", "MIKROFONAS", "ZOOLOGIJA", "NOSINAITE", "VAIZDUOKLIS", "ZALIUZES", "SKAICIUOTUVAS"};
     //private static final String word = WORDS[new Random().nextInt(10) + 1];
@@ -15,8 +14,7 @@ public class Model implements MvpModel {
     private char[] guesses = new char[32];
     private int totalNumberOfGuesses = 0;
 
-
-    public MvpWordProvider getWordProvider() {
+    private MvpWordProvider getWordProvider() {
         return wordProvider;
     }
 
@@ -33,6 +31,16 @@ public class Model implements MvpModel {
     }
 
     @Override
+    public void restoreState(String word, String guesses) {
+        resetVariables();
+        setWord(word);
+        guessedLetters = new char[word.length()];
+        for (int i = 0; i < guesses.length() - 1; i++)
+            if (guesses.charAt(i) != 0)
+                doGuessLetter(guesses.charAt(i));
+    }
+
+    @Override
     public String getWord() {
         return word;
     }
@@ -45,8 +53,7 @@ public class Model implements MvpModel {
         return guessedLetters;
     }
 
-
-    public List<Integer> getAllIndexesOfLetter(char letter) {
+    private List<Integer> getAllIndexesOfLetter(char letter) {
         List<Integer> indexes = new ArrayList<>();
         for (int i = -1; (i = getWord().indexOf(Character.toUpperCase(letter), i + 1)) != -1; )
             indexes.add(i);
@@ -62,7 +69,6 @@ public class Model implements MvpModel {
                 guessedLetters[indexes.get(i)] = uppedLetter;
             }
         else increaseNumberOfGuesses();
-
         guesses[getTotalNumberOfGuesses()] = uppedLetter;
         incTotalNumberOfGuesses();
     }
@@ -77,15 +83,13 @@ public class Model implements MvpModel {
         return numberOfGuesses;
     }
 
-    public void increaseNumberOfGuesses() {
+    private void increaseNumberOfGuesses() {
         numberOfGuesses++;
     }
 
     @Override
     public boolean gameOver() {
-        if (getNumberOfGuesses() >= 11)
-            return true;
-        else return false;
+        return (getNumberOfGuesses() >= 11);
     }
 
     @Override
@@ -93,11 +97,11 @@ public class Model implements MvpModel {
         return guesses;
     }
 
-    public int getTotalNumberOfGuesses() {
+    private int getTotalNumberOfGuesses() {
         return totalNumberOfGuesses;
     }
 
-    public void incTotalNumberOfGuesses() {
+    private void incTotalNumberOfGuesses() {
         this.totalNumberOfGuesses++;
     }
 
@@ -106,5 +110,9 @@ public class Model implements MvpModel {
         guesses = new char[32];
         totalNumberOfGuesses = 0;
         guessedLetters = new char[getWord().length()];
+    }
+
+    private void setWord(String str) {
+        word = str;
     }
 }

@@ -16,4 +16,6 @@ public interface MvpModel {
     char[] getGuesses();
 
     void startNewGame(GameStartCallback callback);
+
+    void restoreState(String word, String guesses);
 }

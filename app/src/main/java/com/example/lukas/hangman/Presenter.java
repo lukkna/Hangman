@@ -18,7 +18,8 @@ public class Presenter implements MvpPresenter {
         getMvpModel().doGuessLetter(letter);
     }
 
-    private String getCorrectWord() {
+    @Override
+    public String getCorrectWord() {
         return getMvpModel().getWord();
     }
 
@@ -26,7 +27,15 @@ public class Presenter implements MvpPresenter {
         return String.valueOf(getMvpModel().getGuessedLetters());
     }
 
-    private String getGuesses() {
+    @Override
+    public void restoreState() {
+        showGuesses();//reset guesses
+        mainView.printGuessedLetters(getGuessedLettersAsString());
+        mainView.changeImage(getMvpModel().getNumberOfGuesses());
+        mainView.enableInput();
+    }
+
+    public String getGuesses() {
         return String.valueOf(getMvpModel().getGuesses());
     }
 
