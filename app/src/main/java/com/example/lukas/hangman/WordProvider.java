@@ -13,6 +13,7 @@ public class WordProvider implements MvpWordProvider {
         final AsyncHttpClient client = new AsyncHttpClient();
         //client.get("http://randomword.setgetgo.com/get.php", new AsyncHttpResponseHandler() {
         client.get("http://10.0.0.243:8080", new AsyncHttpResponseHandler() {
+//        client.get("http://127.0.0.1:8080", new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 String word = new String(responseBody, StandardCharsets.UTF_8);
@@ -22,6 +23,8 @@ public class WordProvider implements MvpWordProvider {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 error.printStackTrace(System.out);
+                String word = new String(responseBody, StandardCharsets.UTF_8);
+                System.out.println(word);
             }
         });
     }

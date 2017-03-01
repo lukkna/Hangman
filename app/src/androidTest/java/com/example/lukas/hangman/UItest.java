@@ -11,6 +11,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 import org.hamcrest.CustomMatcher;
 import org.hamcrest.Matcher;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,19 +25,28 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.any;
+import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static org.hamcrest.core.IsNot.not;
 
 @RunWith(AndroidJUnit4.class)
 public class UItest {
-
-//    private MainActivity activity;
-
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8080);
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<MainActivity>(
             MainActivity.class);
+
+    @Before
+    public void setUp() throws Exception {
+        stubFor(any(anyUrl())
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody("WORD")));
+    }
 
     @Test
     public void testEmptyEditBox() {
@@ -78,17 +88,16 @@ public class UItest {
 
     @Test
     public void testVictory() {
-//        String jsonBody = asset(activity, "atlanta-conditions.json");
-//        stubFor(get(urlMatching("http://10.0.0.243:8080"))
-//                .willReturn(aResponse()
-//                        .withStatus(200)
-//                        .withBody("WORD")));
+//        onView(withId(R.id.button2))
+//                .perform(click());
+//
+//        SystemClock.sleep(3000);
 //
 //        char[] word = new char[]{'W', 'O', 'R', 'D'};
         char[] word = new char[]{'C', 'O', 'M', 'P', 'U', 'T', 'E', 'R'};
-        for (int i = 0; i < word.length; i++) {
+        for (char aWord : word) {
             onView(withId(R.id.editText))
-                    .perform(typeText(String.valueOf(word[i])));
+                    .perform(typeText(String.valueOf(aWord)));
 
             onView(withId(R.id.button))
                     .perform(click());
@@ -119,5 +128,4 @@ public class UItest {
         mActivityRule.getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         SystemClock.sleep(3000);
     }
-
 }
