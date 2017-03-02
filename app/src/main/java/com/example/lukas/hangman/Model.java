@@ -2,10 +2,13 @@ package com.example.lukas.hangman;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Model implements MvpModel {
+class Model implements MvpModel {
     //private static final String[] WORDS = {"PENKTADIENIS", "KOMPIUTERIS", "SAVAITGALIS", "SODININKAS", "KLAVIATURA", "MIKROFONAS", "ZOOLOGIJA", "NOSINAITE", "VAIZDUOKLIS", "ZALIUZES", "SKAICIUOTUVAS"};
     //private static final String word = WORDS[new Random().nextInt(10) + 1];
+    private final static Logger LOGGER = Logger.getLogger(Model.class.getName());
 
     private MvpWordProvider wordProvider = new WordProvider();
     private static String word = "";
@@ -23,6 +26,7 @@ public class Model implements MvpModel {
         getWordProvider().getWordFromApi(new MvpWordProvider.WordReceived() {
             @Override
             public void onWordReceived(String word2) {
+                LOGGER.log(Level.INFO, "Word received, starting new game.");
                 word = word2.toUpperCase();
                 resetVariables();
                 callback.gameStarted();
@@ -62,12 +66,12 @@ public class Model implements MvpModel {
 
     @Override
     public void doGuessLetter(char letter) {
+        LOGGER.log(Level.INFO, "Letter received, checking if guess valid.");
         char uppedLetter = Character.toUpperCase(letter);
         List<Integer> indexes = getAllIndexesOfLetter(uppedLetter);
         if (indexes.size() > 0)
-            for (int i = 0; i < indexes.size(); i++) {
+            for (int i = 0; i < indexes.size(); i++)
                 guessedLetters[indexes.get(i)] = uppedLetter;
-            }
         else increaseNumberOfGuesses();
         guesses[getTotalNumberOfGuesses()] = uppedLetter;
         incTotalNumberOfGuesses();
@@ -110,6 +114,7 @@ public class Model implements MvpModel {
         guesses = new char[32];
         totalNumberOfGuesses = 0;
         guessedLetters = new char[getWord().length()];
+        LOGGER.log(Level.INFO, "Variables has been reset.");
     }
 
     private void setWord(String str) {

@@ -1,11 +1,15 @@
 package com.example.lukas.hangman;
 
-public class Presenter implements MvpPresenter {
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+class Presenter implements MvpPresenter {
+    private final static Logger LOGGER = Logger.getLogger(Model.class.getName());
 
     private MvpModel mvpModel;
     private MainView mainView;
 
-    public Presenter(MvpModel mvpModel, MainView mainView) {
+    Presenter(MvpModel mvpModel, MainView mainView) {
         this.mvpModel = mvpModel;
         this.mainView = mainView;
     }
@@ -48,6 +52,7 @@ public class Presenter implements MvpPresenter {
         if (getMvpModel().wordCompleted()) {
             mainView.showMessage("Victory!");
             mainView.disableInput();
+            LOGGER.log(Level.INFO, "Victory. Input has been disabled.");
         }
     }
 
@@ -55,13 +60,12 @@ public class Presenter implements MvpPresenter {
         if (getMvpModel().gameOver()) {
             mainView.showMessage("Defeat! Correct word is " + getCorrectWord() + ".");
             mainView.disableInput();
+            LOGGER.log(Level.INFO, "Defeat. Input has been disabled.");
         }
     }
 
     private char stringToChar(String letter) {
-        if (letter.length() > 0)
-            return letter.charAt(0);
-        else return 0;
+        return (letter.length() > 0) ? letter.charAt(0) : 0;
     }
 
     private void showGuesses() {
@@ -96,6 +100,7 @@ public class Presenter implements MvpPresenter {
                 mainView.printGuessedLetters(getGuessedLettersAsString());
                 mainView.enableInput();
                 mainView.enableProgressBar(false);
+                LOGGER.log(Level.INFO, "New game started.");
             }
         });
     }

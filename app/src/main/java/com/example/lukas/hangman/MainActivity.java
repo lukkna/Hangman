@@ -10,7 +10,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements MainView {
-
     private MvpPresenter mPresenter;
     private StateKeeper mStateKeeper;
 
@@ -40,8 +39,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         if (savedInstanceState != null) {
             mStateKeeper.restoreState(savedInstanceState);
             mPresenter.restoreState();
-        }
-        else mPresenter.onStartNewGame();
+        } else mPresenter.onStartNewGame();
     }
 
     @Override

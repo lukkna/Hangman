@@ -2,21 +2,26 @@ package com.example.lukas.hangman;
 
 import android.os.Bundle;
 
-public class StateKeeper {
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+class StateKeeper {
+    private final static Logger LOGGER = Logger.getLogger(Model.class.getName());
     private MvpModel model;
 
-    public StateKeeper(MvpModel model) {
+    StateKeeper(MvpModel model) {
         this.model = model;
     }
 
-    public void saveState(Bundle stateStorage) {
+    void saveState(Bundle stateStorage) {
         stateStorage.putString("word", model.getWord());
         stateStorage.putString("guesses", String.valueOf(model.getGuesses()));
+        LOGGER.log(Level.INFO, "State saved.");
     }
 
-    public void restoreState(Bundle stateStorage) {
+    void restoreState(Bundle stateStorage) {
         model.restoreState(stateStorage.getString("word"),
                 stateStorage.getString("guesses"));
+        LOGGER.log(Level.INFO, "State restored.");
     }
 }

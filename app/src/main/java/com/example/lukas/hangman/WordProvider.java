@@ -4,10 +4,14 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import cz.msebera.android.httpclient.Header;
 
-public class WordProvider implements MvpWordProvider {
+class WordProvider implements MvpWordProvider {
+    private final static Logger LOGGER = Logger.getLogger(Model.class.getName());
+
     @Override
     public void getWordFromApi(WordReceived callback) {
         final AsyncHttpClient client = new AsyncHttpClient();
@@ -17,14 +21,13 @@ public class WordProvider implements MvpWordProvider {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 String word = new String(responseBody, StandardCharsets.UTF_8);
+                LOGGER.log(Level.INFO, "Word received: " + word);
                 callback.onWordReceived(word);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                error.printStackTrace(System.out);
-                String word = new String(responseBody, StandardCharsets.UTF_8);
-                System.out.println(word);
+                LOGGER.log(Level.SEVERE, "Failed to receive word!", error);
             }
         });
     }

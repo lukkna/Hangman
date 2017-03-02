@@ -1,6 +1,6 @@
 package com.example.lukas.hangman;
 
-public interface MainView {
+interface MainView {
     void showMessage(String message);
 
     void changeImage(int id);

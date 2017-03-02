@@ -1,6 +1,6 @@
 package com.example.lukas.hangman;
 
-public interface MvpModel {
+interface MvpModel {
     String getWord();
 
     char[] getGuessedLetters();

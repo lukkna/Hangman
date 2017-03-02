@@ -1,6 +1,6 @@
 package com.example.lukas.hangman;
 
-public interface MvpWordProvider {
+interface MvpWordProvider {
     void getWordFromApi(WordReceived callback);
 
     interface WordReceived {

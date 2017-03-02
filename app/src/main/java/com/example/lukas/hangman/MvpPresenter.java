@@ -1,6 +1,6 @@
 package com.example.lukas.hangman;
 
-public interface MvpPresenter {
+interface MvpPresenter {
     void onGuessLetter(String letter);
 
     void onStartNewGame();
