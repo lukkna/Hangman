@@ -18,9 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
@@ -55,18 +52,17 @@ public class UItest {
     }
 
     @Test
-    public void testEmptyEditBox() {
-        onView(withId(R.id.button))
-                .perform(click())
-                .check(matches(isDisplayed()));
+    public void guessLetterTextBoxIsEmpty() {
+        MainPageObject.clickGuessLetterButton();
+        matches(isDisplayed());
     }
 
     @Test
-    public void textGuessPrinting() throws InterruptedException {
-        onView(withId(R.id.editText))
-                .perform(typeText("a"), closeSoftKeyboard());
-        onView(withId(R.id.button))
-                .perform(click());
+    public void guessedLetterPrinted() throws InterruptedException {
+        MainPageObject.putLetterIntoGuessLetterTextBox('a');
+        MainPageObject.closeKeyboard();
+        MainPageObject.clickGuessLetterButton();
+        // checking if guessed letter appears in textView (textView2) in the top part of the screen
         Matcher<View> viewMatcher = withId(R.id.textView2);
         ViewInteraction viewInteraction = onView(viewMatcher);
         viewInteraction.check(matches(withText(new CustomMatcher<String>("kazkas") {
@@ -78,12 +74,10 @@ public class UItest {
     }
 
     @Test
-    public void testDefeat() {
+    public void inputDisabledAfterDefeat() {
         for (int i = 0; i < 11; i++) {
-            onView(withId(R.id.editText))
-                    .perform(typeText("."));
-            onView(withId(R.id.button))
-                    .perform(click());
+            MainPageObject.putLetterIntoGuessLetterTextBox('.');
+            MainPageObject.clickGuessLetterButton();
         }
         onView(withId(R.id.editText))
                 .check(matches(not(isEnabled())));
@@ -92,45 +86,30 @@ public class UItest {
     }
 
     @Test
-    public void testVictory() {
-        activityRule.getActivity().getApplicationContext();//??
-
-        onView(withId(R.id.button2))
-                .perform(click());
-
-        SystemClock.sleep(3000);
-
+    public void inputDisabledAfterVictory() {
         char[] word = new char[]{'W', 'O', 'R', 'D'};
 
         for (char aWord : word) {
-            onView(withId(R.id.editText))
-                    .perform(typeText(String.valueOf(aWord)));
-
-            onView(withId(R.id.button))
-                    .perform(click());
+            MainPageObject.putLetterIntoGuessLetterTextBox(aWord);
+            MainPageObject.clickGuessLetterButton();
         }
-
         onView(withId(R.id.editText))
                 .check(matches(not(isEnabled())));
-
         onView(withId(R.id.button))
                 .check(matches(not(isEnabled())));
     }
 
     @Test
-    public void testRotation() {
-        onView(withId(R.id.editText))
-                .perform(typeText("A"));
-        onView(withId(R.id.button))
-                .perform(click());
+    public void deviceRotatedDuringGameplay() {
+        MainPageObject.putLetterIntoGuessLetterTextBox('A');
+        MainPageObject.clickGuessLetterButton();
 
         activityRule.getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         SystemClock.sleep(3000);
 
-        onView(withId(R.id.editText))
-                .perform(typeText("B"), closeSoftKeyboard());
-        onView(withId(R.id.button))
-                .perform(click());
+        MainPageObject.putLetterIntoGuessLetterTextBox('B');
+        MainPageObject.closeKeyboard();
+        MainPageObject.clickGuessLetterButton();
 
         activityRule.getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         SystemClock.sleep(3000);
