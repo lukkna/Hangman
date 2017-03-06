@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private EditText mGuessLetterEditText;
     private ImageView mImageView;
     private Button mButton; //guess letter
+    private Button mPlayGameButton;
     private RelativeLayout mRelativeLayout; //progress bar
 
     @Override
@@ -29,17 +30,22 @@ public class MainActivity extends AppCompatActivity implements MainView {
         mStateKeeper = new StateKeeper(model);
         mPresenter = new Presenter(model, this);
 
-        mTitleTextView = (TextView) findViewById(R.id.textView2);
-        mWordTextView = (TextView) findViewById(R.id.textView);
-        mGuessLetterEditText = (EditText) findViewById(R.id.editText);
-        mImageView = (ImageView) findViewById(R.id.imageView);
-        mButton = (Button) findViewById(R.id.button);
-        mRelativeLayout = (RelativeLayout) findViewById(R.id.loadingPanel);
+        setUp();
 
         if (savedInstanceState != null) {
             mStateKeeper.restoreState(savedInstanceState);
             mPresenter.restoreState();
         } else mPresenter.onStartNewGame();
+    }
+
+    private void setUp() {
+        mTitleTextView = (TextView) findViewById(R.id.textView2);
+        mWordTextView = (TextView) findViewById(R.id.textView);
+        mGuessLetterEditText = (EditText) findViewById(R.id.editText);
+        mImageView = (ImageView) findViewById(R.id.imageView);
+        mButton = (Button) findViewById(R.id.button);
+        mPlayGameButton = (Button) findViewById(R.id.button2);
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.loadingPanel);
     }
 
     @Override
@@ -73,6 +79,11 @@ public class MainActivity extends AppCompatActivity implements MainView {
         if (enabled)
             mRelativeLayout.setVisibility(View.VISIBLE);
         else mRelativeLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void changePlayGameButtonText() {
+        mPlayGameButton.setText("Try again.");
     }
 
     @Override

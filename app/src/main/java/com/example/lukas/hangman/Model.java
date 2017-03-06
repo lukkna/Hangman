@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 class Model implements MvpModel {
     //private static final String[] WORDS = {"PENKTADIENIS", "KOMPIUTERIS", "SAVAITGALIS", "SODININKAS", "KLAVIATURA", "MIKROFONAS", "ZOOLOGIJA", "NOSINAITE", "VAIZDUOKLIS", "ZALIUZES", "SKAICIUOTUVAS"};
     //private static final String word = WORDS[new Random().nextInt(10) + 1];
-    private final static Logger LOGGER = Logger.getLogger(Model.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
 
     private MvpWordProvider wordProvider = new WordProvider();
     private static String word = "";
@@ -23,11 +23,13 @@ class Model implements MvpModel {
 
     @Override
     public void startNewGame(GameStartCallback callback) {
-        getWordProvider().getWordFromApi(new MvpWordProvider.WordReceived() {
-            @Override
-            public void onWordReceived(String word2) {
-                LOGGER.log(Level.INFO, "Word received, starting new game.");
+        getWordProvider().getWordFromApi(word2 -> {
+            if (word2.equals("500")) {
+                callback.gameFailedToStart();
+                LOGGER.log(Level.WARNING, "Failed to retrieve word.");
+            } else {
                 word = word2.toUpperCase();
+                LOGGER.log(Level.INFO, "Word (" + word + ") received, starting new game.");
                 resetVariables();
                 callback.gameStarted();
             }

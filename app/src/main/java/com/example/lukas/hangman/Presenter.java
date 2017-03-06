@@ -4,7 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class Presenter implements MvpPresenter {
-    private final static Logger LOGGER = Logger.getLogger(Model.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
 
     private MvpModel mvpModel;
     private MainView mainView;
@@ -101,6 +101,14 @@ class Presenter implements MvpPresenter {
                 mainView.enableInput();
                 mainView.enableProgressBar(false);
                 LOGGER.log(Level.INFO, "New game started.");
+            }
+
+            @Override
+            public void gameFailedToStart() {
+                mainView.enableProgressBar(false);
+                mainView.changePlayGameButtonText();
+                mainView.showMessage("Failed to retrieve word. Press try again.");
+                LOGGER.log(Level.WARNING, "Failed to retrieve word.");
             }
         });
     }

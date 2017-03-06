@@ -10,13 +10,13 @@ import java.util.logging.Logger;
 import cz.msebera.android.httpclient.Header;
 
 class WordProvider implements MvpWordProvider {
-    private final static Logger LOGGER = Logger.getLogger(Model.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
 
     @Override
     public void getWordFromApi(WordReceived callback) {
         final AsyncHttpClient client = new AsyncHttpClient();
-//        client.get("http://randomword.setgetgo.com/get.php", new AsyncHttpResponseHandler() {
-        client.get("http://localhost:8080", new AsyncHttpResponseHandler() {
+        client.get("http://randomword.setgetgo.com/get.php", new AsyncHttpResponseHandler() {
+//        client.get("http://localhost:8080", new AsyncHttpResponseHandler() {
 //        client.get("http://127.0.0.1:8080", new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -28,6 +28,7 @@ class WordProvider implements MvpWordProvider {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 LOGGER.log(Level.SEVERE, "Failed to receive word!", error);
+                callback.onWordReceived("500");
             }
         });
     }
