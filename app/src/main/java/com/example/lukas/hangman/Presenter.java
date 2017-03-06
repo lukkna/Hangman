@@ -1,11 +1,8 @@
 package com.example.lukas.hangman;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import timber.log.Timber;
 
 class Presenter implements MvpPresenter {
-    private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
-
     private MvpModel mvpModel;
     private MainView mainView;
 
@@ -35,7 +32,7 @@ class Presenter implements MvpPresenter {
     public void restoreState() {
         showGuesses();//reset guesses
         mainView.printGuessedLetters(getGuessedLettersAsString());
-        mainView.changeImage(getMvpModel().getNumberOfGuesses());
+        mainView.changeImage(getMvpModel().getNumberOfWrongGuesses());
         mainView.enableInput();
     }
 
@@ -49,10 +46,10 @@ class Presenter implements MvpPresenter {
     }
 
     private void checkVictory() {
-        if (getMvpModel().wordCompleted()) {
+        if (getMvpModel().victory()) {
             mainView.showMessage("Victory!");
             mainView.disableInput();
-            LOGGER.log(Level.INFO, "Victory. Input has been disabled.");
+            Timber.i("Victory. Input has been disabled.");
         }
     }
 
@@ -60,7 +57,7 @@ class Presenter implements MvpPresenter {
         if (getMvpModel().gameOver()) {
             mainView.showMessage("Defeat! Correct word is " + getCorrectWord() + ".");
             mainView.disableInput();
-            LOGGER.log(Level.INFO, "Defeat. Input has been disabled.");
+            Timber.i("Defeat. Input has been disabled.");
         }
     }
 
@@ -70,7 +67,7 @@ class Presenter implements MvpPresenter {
 
     private void showGuesses() {
         mainView.showMessage(getGuesses());
-        mainView.changeImage(getMvpModel().getNumberOfGuesses());
+        mainView.changeImage(getMvpModel().getNumberOfWrongGuesses());
         mainView.printGuessedLetters(getGuessedLettersAsString());
     }
 
@@ -88,6 +85,22 @@ class Presenter implements MvpPresenter {
         checkIfGameEnded();
     }
 
+    private void onGameStarted() {
+        showGuesses();//reset guesses
+        mainView.printGuessedLetters(getGuessedLettersAsString());
+        mainView.enableInput();
+        mainView.enableProgressBar(false);
+        Timber.i("New game started.");
+    }
+
+    private void onGameFailedToStart() {
+        mainView.enableProgressBar(false);
+        mainView.changeImage(500);
+        mainView.changePlayGameButtonText("Try again.");
+        mainView.showMessage("Failed to retrieve word. Press try again.");
+        Timber.e("Failed to retrieve word.");
+    }
+
     @Override
     public void onStartNewGame() {
         mainView.enableProgressBar(true);
@@ -96,19 +109,12 @@ class Presenter implements MvpPresenter {
         getMvpModel().startNewGame(new GameStartCallback() {
             @Override
             public void gameStarted() {
-                showGuesses();//reset guesses
-                mainView.printGuessedLetters(getGuessedLettersAsString());
-                mainView.enableInput();
-                mainView.enableProgressBar(false);
-                LOGGER.log(Level.INFO, "New game started.");
+                onGameStarted();
             }
 
             @Override
             public void gameFailedToStart() {
-                mainView.enableProgressBar(false);
-                mainView.changePlayGameButtonText();
-                mainView.showMessage("Failed to retrieve word. Press try again.");
-                LOGGER.log(Level.WARNING, "Failed to retrieve word.");
+                onGameFailedToStart();
             }
         });
     }

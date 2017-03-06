@@ -13,5 +13,5 @@ interface MainView {
 
     void enableProgressBar(boolean enabled);
 
-    void changePlayGameButtonText();
+    void changePlayGameButtonText(String text);
 }

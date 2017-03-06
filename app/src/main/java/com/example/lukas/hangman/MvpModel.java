@@ -7,9 +7,9 @@ interface MvpModel {
 
     void doGuessLetter(char letter);
 
-    int getNumberOfGuesses();
+    int getNumberOfWrongGuesses();
 
-    boolean wordCompleted();
+    boolean victory();
 
     boolean gameOver();
 

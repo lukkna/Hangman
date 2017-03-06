@@ -2,20 +2,18 @@ package com.example.lukas.hangman;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import timber.log.Timber;
 
 class Model implements MvpModel {
     //private static final String[] WORDS = {"PENKTADIENIS", "KOMPIUTERIS", "SAVAITGALIS", "SODININKAS", "KLAVIATURA", "MIKROFONAS", "ZOOLOGIJA", "NOSINAITE", "VAIZDUOKLIS", "ZALIUZES", "SKAICIUOTUVAS"};
     //private static final String word = WORDS[new Random().nextInt(10) + 1];
-    private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
-
     private MvpWordProvider wordProvider = new WordProvider();
     private static String word = "";
     private char[] guessedLetters;
-    private int numberOfGuesses = 0; //number of wrong guesses
+    private int numberOfWrongGuesses = 0; //number of wrong guesses
     private char[] guesses = new char[32];
-    private int totalNumberOfGuesses = 0;
+    private int numberOfGuesses = 0;
 
     private MvpWordProvider getWordProvider() {
         return wordProvider;
@@ -23,15 +21,15 @@ class Model implements MvpModel {
 
     @Override
     public void startNewGame(GameStartCallback callback) {
-        getWordProvider().getWordFromApi(word2 -> {
-            if (word2.equals("500")) {
+        getWordProvider().getWordFromApi(word -> {
+            if (word.equals("500")) {
                 callback.gameFailedToStart();
-                LOGGER.log(Level.WARNING, "Failed to retrieve word.");
+                Timber.e("Failed to retrieve word.");
             } else {
-                word = word2.toUpperCase();
-                LOGGER.log(Level.INFO, "Word (" + word + ") received, starting new game.");
+                setWord(word.toUpperCase());
                 resetVariables();
                 callback.gameStarted();
+                Timber.i("Word (" + word + ") received, starting new game.");
             }
         });
     }
@@ -40,10 +38,13 @@ class Model implements MvpModel {
     public void restoreState(String word, String guesses) {
         resetVariables();
         setWord(word);
-        guessedLetters = new char[word.length()];
-        for (int i = 0; i < guesses.length() - 1; i++)
+        for (int i = 0; i < guesses.length(); i++)
             if (guesses.charAt(i) != 0)
                 doGuessLetter(guesses.charAt(i));
+    }
+
+    private void setWord(String str) {
+        word = str;
     }
 
     @Override
@@ -53,8 +54,8 @@ class Model implements MvpModel {
 
     @Override
     public char[] getGuessedLetters() {
-        for (int i = 0; i < word.length(); i++)
-            if (guessedLetters[i] == 0)
+        for (int i = 0; i < getWord().length(); i++)
+            if (guessedLetters != null && guessedLetters[i] == 0)
                 guessedLetters[i] = '*';
         return guessedLetters;
     }
@@ -68,34 +69,41 @@ class Model implements MvpModel {
 
     @Override
     public void doGuessLetter(char letter) {
-        LOGGER.log(Level.INFO, "Letter received, checking if guess valid.");
-        char uppedLetter = Character.toUpperCase(letter);
-        List<Integer> indexes = getAllIndexesOfLetter(uppedLetter);
+        Timber.i("Letter (" + letter + ") received, checking if guess valid.");
+        checkGuess(Character.toUpperCase(letter));
+        guesses[getNumberOfGuesses()] = Character.toUpperCase(letter);
+        increaseNumberOfGuesses();
+    }
+
+    private void checkGuess(char letter) {
+        List<Integer> indexes = getAllIndexesOfLetter(letter);
         if (indexes.size() > 0)
             for (int i = 0; i < indexes.size(); i++)
-                guessedLetters[indexes.get(i)] = uppedLetter;
-        else increaseNumberOfGuesses();
-        guesses[getTotalNumberOfGuesses()] = uppedLetter;
-        incTotalNumberOfGuesses();
+                guessedLetters[indexes.get(i)] = letter;
+        else checkIfGuessRecurrent(letter);
+    }
+
+    private void checkIfGuessRecurrent(char letter) {
+        if (!String.valueOf(getGuesses()).contains("" + letter))
+            increaseNumberOfWrongGuesses();
     }
 
     @Override
-    public boolean wordCompleted() {
-        return word.equals(String.valueOf(getGuessedLetters()));
-    }
-
-    @Override
-    public int getNumberOfGuesses() {
-        return numberOfGuesses;
-    }
-
-    private void increaseNumberOfGuesses() {
-        numberOfGuesses++;
+    public boolean victory() {
+        return getGuessedLetters() != null && getWord().equals(String.valueOf(getGuessedLetters()));
     }
 
     @Override
     public boolean gameOver() {
-        return (getNumberOfGuesses() >= 11);
+        return (getNumberOfWrongGuesses() >= 11);
+    }
+
+    public int getNumberOfWrongGuesses() {
+        return numberOfWrongGuesses;
+    }
+
+    private void increaseNumberOfWrongGuesses() {
+        numberOfWrongGuesses++;
     }
 
     @Override
@@ -103,23 +111,19 @@ class Model implements MvpModel {
         return guesses;
     }
 
-    private int getTotalNumberOfGuesses() {
-        return totalNumberOfGuesses;
+    private int getNumberOfGuesses() {
+        return numberOfGuesses;
     }
 
-    private void incTotalNumberOfGuesses() {
-        this.totalNumberOfGuesses++;
+    private void increaseNumberOfGuesses() {
+        this.numberOfGuesses++;
     }
 
     private void resetVariables() {
-        numberOfGuesses = 0;
+        numberOfWrongGuesses = 0;
         guesses = new char[32];
-        totalNumberOfGuesses = 0;
+        numberOfGuesses = 0;
         guessedLetters = new char[getWord().length()];
-        LOGGER.log(Level.INFO, "Variables has been reset.");
-    }
-
-    private void setWord(String str) {
-        word = str;
+        Timber.i("Variables have been reset.");
     }
 }

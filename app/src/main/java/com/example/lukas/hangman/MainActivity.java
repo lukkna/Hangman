@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import timber.log.Timber;
+
 public class MainActivity extends AppCompatActivity implements MainView {
     private MvpPresenter mPresenter;
     private StateKeeper mStateKeeper;
@@ -25,13 +27,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        final Model model = new Model();
-        mStateKeeper = new StateKeeper(model);
-        mPresenter = new Presenter(model, this);
-
         setUp();
-
         if (savedInstanceState != null) {
             mStateKeeper.restoreState(savedInstanceState);
             mPresenter.restoreState();
@@ -46,6 +42,10 @@ public class MainActivity extends AppCompatActivity implements MainView {
         mButton = (Button) findViewById(R.id.button);
         mPlayGameButton = (Button) findViewById(R.id.button2);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.loadingPanel);
+        final Model model = new Model();
+        mStateKeeper = new StateKeeper(model);
+        mPresenter = new Presenter(model, this);
+        Timber.plant(new Timber.DebugTree());
     }
 
     @Override
@@ -82,8 +82,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     @Override
-    public void changePlayGameButtonText() {
-        mPlayGameButton.setText("Try again.");
+    public void changePlayGameButtonText(String text) {
+        mPlayGameButton.setText(text);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.example.lukas.hangman;
 
-public interface GameStartCallback {
+interface GameStartCallback {
     void gameStarted();
 
     void gameFailedToStart();

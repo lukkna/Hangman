@@ -2,11 +2,9 @@ package com.example.lukas.hangman;
 
 import android.os.Bundle;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import timber.log.Timber;
 
 class StateKeeper {
-    private final static Logger LOGGER = Logger.getLogger(Model.class.getName());
     private MvpModel model;
 
     StateKeeper(MvpModel model) {
@@ -16,12 +14,17 @@ class StateKeeper {
     void saveState(Bundle stateStorage) {
         stateStorage.putString("word", model.getWord());
         stateStorage.putString("guesses", String.valueOf(model.getGuesses()));
-        LOGGER.log(Level.INFO, "State saved.");
+        Timber.i("State (word - " + model.getWord() + ", guesses - " +
+                String.valueOf(model.getGuesses()) + ") have been saved.");
     }
 
     void restoreState(Bundle stateStorage) {
-        model.restoreState(stateStorage.getString("word"),
-                stateStorage.getString("guesses"));
-        LOGGER.log(Level.INFO, "State restored.");
+        if (stateStorage == null)
+            Timber.e("Bundle you trying to restore is null!");
+        else {
+            model.restoreState(stateStorage.getString("word"), stateStorage.getString("guesses"));
+            Timber.i("State (word - " + stateStorage.getString("word") + ", guesses - " +
+                    stateStorage.getString("guesses") + ") have been saved.");
+        }
     }
 }
