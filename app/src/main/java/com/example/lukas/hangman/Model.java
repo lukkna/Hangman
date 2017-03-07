@@ -21,15 +21,19 @@ class Model implements MvpModel {
 
     @Override
     public void startNewGame(GameStartCallback callback) {
-        getWordProvider().getWordFromApi(word -> {
-            if (word.equals("500")) {
-                callback.gameFailedToStart();
-                Timber.e("Failed to retrieve word.");
-            } else {
-                setWord(word.toUpperCase());
-                resetVariables();
+        getWordProvider().getWordFromApi(new MvpWordProvider.WordReceived() {
+            @Override
+            public void onWordReceived(String word) {
+                Model.this.setWord(word.toUpperCase());
+                Model.this.resetVariables();
                 callback.gameStarted();
                 Timber.i("Word (" + word + ") received, starting new game.");
+            }
+
+            @Override
+            public void onFailure(String error) {
+                callback.gameFailedToStart(error);
+                Timber.e(error);
             }
         });
     }

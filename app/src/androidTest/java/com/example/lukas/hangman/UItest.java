@@ -76,7 +76,7 @@ public class UItest {
     @Test
     public void inputDisabledAfterDefeat() {
         for (int i = 0; i < 11; i++) {
-            MainPageObject.putLetterIntoGuessLetterTextBox('.');
+            MainPageObject.putLetterIntoGuessLetterTextBox((char) i);
             MainPageObject.clickGuessLetterButton();
         }
         onView(withId(R.id.editText))

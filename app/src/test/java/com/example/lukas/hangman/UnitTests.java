@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-public class ExampleUnitTest {
+public class UnitTests {
     private Model model = new Model();
 
     @Test
@@ -56,14 +56,4 @@ public class ExampleUnitTest {
         assertEquals(word, model.getWord());
         assertEquals(guesses.charAt(3), model.getGuesses()[3]);
     }
-
-//    @Test
-//    public void startNewGameTest() {
-//        GameStartCallback callback = () -> {};
-//        model.startNewGame(callback);
-//
-//
-//
-//    }
-
 }

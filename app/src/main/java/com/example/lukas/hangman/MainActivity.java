@@ -82,11 +82,6 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     @Override
-    public void changePlayGameButtonText(String text) {
-        mPlayGameButton.setText(text);
-    }
-
-    @Override
     public void showMessage(String message) {
         mTitleTextView.setText(message);
     }

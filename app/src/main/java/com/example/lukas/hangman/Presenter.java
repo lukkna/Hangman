@@ -93,11 +93,10 @@ class Presenter implements MvpPresenter {
         Timber.i("New game started.");
     }
 
-    private void onGameFailedToStart() {
+    private void onGameFailedToStart(String error) {
         mainView.enableProgressBar(false);
         mainView.changeImage(500);
-        mainView.changePlayGameButtonText("Try again.");
-        mainView.showMessage("Failed to retrieve word. Press try again.");
+        mainView.showMessage(error + " Press ''Start new game'' to try again.");
         Timber.e("Failed to retrieve word.");
     }
 
@@ -113,8 +112,8 @@ class Presenter implements MvpPresenter {
             }
 
             @Override
-            public void gameFailedToStart() {
-                onGameFailedToStart();
+            public void gameFailedToStart(String error) {
+                onGameFailedToStart(error);
             }
         });
     }

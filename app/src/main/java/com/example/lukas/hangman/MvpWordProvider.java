@@ -5,5 +5,7 @@ interface MvpWordProvider {
 
     interface WordReceived {
         void onWordReceived(String word);
+
+        void onFailure(String error);
     }
 }
